@@ -78,6 +78,7 @@ let USAGE_IN_RANGE: UInt32 = 0x32
 let USAGE_PRESSURE: UInt32 = 0x33
 let USAGE_TIP_SWITCH: UInt32 = 0x42
 let USAGE_BARREL_SWITCH: UInt32 = 0x44
+let USAGE_SECONDARY_BARREL: UInt32 = 0x45
 
 // Tablet active area and pressure resolution as declared by the device.
 let TABLET_MAX_X: Double = 10000
@@ -138,6 +139,7 @@ final class Shim {
     var cookiePressure: IOHIDElementCookie = 0
     var cookieTip: IOHIDElementCookie = 0
     var cookieBarrel: IOHIDElementCookie = 0
+    var cookieBarrel2: IOHIDElementCookie = 0
     var cookieInRange: IOHIDElementCookie = 0
 
     var curX = 0.0
@@ -145,6 +147,7 @@ final class Shim {
     var curPressure = 0.0
     var curTip = false
     var curBarrel = false
+    var curBarrel2 = false
     var curInRange = false
     var proximityPosted = false
 
@@ -239,13 +242,14 @@ func makeEvent(_ pressure01: Double) -> CGEvent {
     e.setIntegerValueField(.tabletEventDeviceID, value: DEVICE_ID)
     e.setIntegerValueField(Field.eventSourceUserData, value: 1)
 
-    // The tablet event's OWN button bits. Qt ignores these unless
-    // QT_MAC_TABLET_IGNORE_BUTTON_MAPPING=1 is set, in which case it uses them
-    // instead of the view's mouse state. That lets one event carry both the
-    // press and the pressure, so Krita starts a tablet stroke (with pressure)
-    // rather than a mouse stroke (without).
-    e.setIntegerValueField(.tabletEventPointButtons, value: s.curTip ? 1 : 0)
-    e.setIntegerValueField(.mouseEventButtonNumber, value: s.curBarrel ? 1 : 0)
+    // AppKit preserves button state for tablet events only in this field.
+    // Bit 0 is the tip, bit 1 is the primary barrel switch, and bit 2 is the
+    // secondary barrel switch. Qt uses these when
+    // QT_MAC_TABLET_IGNORE_BUTTON_MAPPING=1 is set.
+    var buttonBits: Int64 = s.curTip ? 1 : 0
+    if s.curBarrel { buttonBits |= 2 }
+    if s.curBarrel2 { buttonBits |= 4 }
+    e.setIntegerValueField(.tabletEventPointButtons, value: buttonBits)
     e.setIntegerValueField(.mouseEventClickState, value: s.curTip ? 1 : 0)
     return e
 }
@@ -284,8 +288,18 @@ func runSelftest() -> Bool {
     checkI("point event device id matches proximity", down.getIntegerValueField(.tabletEventDeviceID), DEVICE_ID)
 
     Shim.shared.curTip = false
+    Shim.shared.curBarrel = true
+    let barrel1 = makeEvent(0.0)
+    checkI("point event sets primary barrel button bit", barrel1.getIntegerValueField(.tabletEventPointButtons), 2)
+
+    Shim.shared.curBarrel2 = true
+    let barrels = makeEvent(0.0)
+    checkI("point event sets both barrel button bits", barrels.getIntegerValueField(.tabletEventPointButtons), 6)
+
+    Shim.shared.curBarrel = false
+    Shim.shared.curBarrel2 = false
     let up = makeEvent(0.0)
-    checkI("point event clears tip button bit when tip up", up.getIntegerValueField(.tabletEventPointButtons), 0)
+    checkI("point event clears button bits when all buttons up", up.getIntegerValueField(.tabletEventPointButtons), 0)
 
     print(allPassed ? "selftest: PASS" : "selftest: FAIL")
     return allPassed
@@ -400,9 +414,10 @@ func bindElements(_ device: IOHIDDevice) {
         else if page == UP_DIGITIZER && (usage == USAGE_PRESSURE || usage == USAGE_X) { s.cookiePressure = cookie }
         else if page == UP_DIGITIZER && usage == USAGE_TIP_SWITCH { s.cookieTip = cookie }
         else if page == UP_DIGITIZER && usage == USAGE_BARREL_SWITCH { s.cookieBarrel = cookie }
+        else if page == UP_DIGITIZER && usage == USAGE_SECONDARY_BARREL { s.cookieBarrel2 = cookie }
         else if page == UP_DIGITIZER && usage == USAGE_IN_RANGE { s.cookieInRange = cookie }
     }
-    logline("[hid] bound x=\(s.cookieX) y=\(s.cookieY) pressure=\(s.cookiePressure) tip=\(s.cookieTip) barrel=\(s.cookieBarrel) inRange=\(s.cookieInRange)")
+    logline("[hid] bound x=\(s.cookieX) y=\(s.cookieY) pressure=\(s.cookiePressure) tip=\(s.cookieTip) barrel=\(s.cookieBarrel) barrel2=\(s.cookieBarrel2) inRange=\(s.cookieInRange)")
     if s.cookiePressure == 0 { logline("[warn] no pressure element bound — cannot republish pressure") }
 }
 
@@ -417,6 +432,7 @@ let valueCallback: IOHIDValueCallback = { _, _, _, value in
     else if c == s.cookiePressure { s.curPressure = v }
     else if c == s.cookieTip { s.curTip = v != 0 }
     else if c == s.cookieBarrel { s.curBarrel = v != 0 }
+    else if c == s.cookieBarrel2 { s.curBarrel2 = v != 0 }
     else if c == s.cookieInRange { s.curInRange = v != 0 }
 
     s.eventCount += 1
