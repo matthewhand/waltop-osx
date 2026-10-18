@@ -33,17 +33,22 @@ tip, barrel and in-range; no tilt or touch data was seen from the author's unit.
 
 ![WALTOP SlimTablet retail box](docs/tablet-reference.jpg)
 
-<sub>*WALTOP SlimTablet retail box (photo found online; source not yet identified).*</sub>
+<sub>*WALTOP SlimTablet retail box. Photo: [DonanımHaber forum listing](https://forum.donanimhaber.com/satildi-waltop-slim-a4-12-1-grafik-tablet-az-kullanilmis-eksiksiz-temiz--113088510), posted by tysonpearl.*</sub>
 
 ![The tablet from above, with the printed shortcut overlay and the Tablet Application Guide booklet](docs/tablet-top-down.jpg)
 
 <sub>*The tablet from above, with its printed shortcut overlay and the "Tablet Application
-Guide" booklet (photo found online; source not yet identified).*</sub>
+Guide" booklet. Photo: [DonanımHaber forum listing](https://forum.donanimhaber.com/satildi-waltop-slim-a4-12-1-grafik-tablet-az-kullanilmis-eksiksiz-temiz--113088510), posted by tysonpearl.*</sub>
 
 ![The tablet's drawing surface at an angle, showing the row of hotkey squares](docs/tablet-surface.jpg)
 
-<sub>*All three photos were found online; their source and licence have not yet been
-identified (see [ATTRIBUTIONS.md](ATTRIBUTIONS.md)).*</sub>
+<sub>*The drawing surface and hotkey squares. Photo: [DonanımHaber forum listing](https://forum.donanimhaber.com/satildi-waltop-slim-a4-12-1-grafik-tablet-az-kullanilmis-eksiksiz-temiz--113088510), posted by tysonpearl.*</sub>
+
+<sub>*All three photos come from a used-sale listing titled "[SATILDI]Waltop Slim A4 12.1'
+Grafik Tablet" on the DonanımHaber forum (December 2015). They are not of the author's
+unit, and the USB ID of the tablet in the listing is not known. No licence was stated;
+they are used for identification only and will be removed on request. See
+[ATTRIBUTIONS.md](ATTRIBUTIONS.md).*</sub>
 
 ---
 
@@ -252,7 +257,7 @@ The userspace shim avoids both problems entirely.
 ```
 waltop-intel-osx/
 ├── README.md              this file
-├── ATTRIBUTIONS.md        third-party material (photo provenance)
+├── ATTRIBUTIONS.md        third-party material (photo sources)
 ├── kritadraw.sh           one-command launch for Krita
 ├── LICENSE                MIT
 ├── docs/
@@ -274,6 +279,6 @@ only source is committed. Build the shim with the command in [Install](#install)
 
 ## License
 
-MIT — see [LICENSE](LICENSE). The photos in `docs/` are third-party images whose
-source and licence are unknown; they are not covered by the MIT licence. See
-[ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+MIT — see [LICENSE](LICENSE). The photos in `docs/` are third-party images from a
+DonanımHaber forum listing; no licence was stated and they are not covered by the MIT
+licence. See [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
