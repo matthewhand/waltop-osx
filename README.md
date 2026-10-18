@@ -1,4 +1,4 @@
-# waltop-intel-osx
+# waltop-osx
 
 **Pen pressure for the WALTOP Slim Tablet 12.1" (`172f:0031`) on macOS — in userspace, no kext, no SIP changes.**
 
@@ -9,6 +9,10 @@ republishes it as proper CoreGraphics tablet events.
 
 **Status: working.** Verified drawing with pressure in Krita on one machine — see
 [Testing scope](#testing-scope). No kernel extension involved.
+
+> **Compatibility:** Tested only on an Intel Mac (macOS 14). Apple Silicon (M1 and
+> later) is untested; nothing in the code is known to be Intel-specific, but it has
+> not been built or run there.
 
 ---
 
@@ -119,8 +123,8 @@ once with the Xcode Command Line Tools (`xcode-select --install` if `swiftc` is
 missing):
 
 ```sh
-git clone https://github.com/matthewhand/waltop-intel-osx.git
-cd waltop-intel-osx/tools
+git clone https://github.com/matthewhand/waltop-osx.git
+cd waltop-osx/tools
 swiftc -O -o waltopd waltopd.swift
 ```
 
@@ -225,8 +229,8 @@ validated on any other configuration.**
 
 - Not tested on any other `172f:*` product, or on any rebadged or similar-looking
   tablet. Other models may have different descriptors.
-- Not tested on Apple Silicon. Nothing in the code is known to be Intel-specific, but
-  this is unverified.
+- Not tested on Apple Silicon (M1 and later): it has not been built or run there. See
+  the compatibility note at the top.
 - Not tested on macOS versions other than 14.8.7.
 - Not tested with any application other than Krita.
 - Assumes the tablet reports X/Y/pressure at the standard element locations and a
@@ -255,7 +259,7 @@ The userspace shim avoids both problems entirely.
 ## Layout
 
 ```
-waltop-intel-osx/
+waltop-osx/
 ├── README.md              this file
 ├── ATTRIBUTIONS.md        third-party material (photo sources)
 ├── kritadraw.sh           one-command launch for Krita
