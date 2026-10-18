@@ -20,23 +20,29 @@ republishes it as proper CoreGraphics tablet events.
 | Marketing name | WALTOP Slim Tablet 12.1" |
 | Reported by | `Slim Tablet` / `WALTOP International Corp.` |
 | Interface | 1x USB 1.10 HID, 1 interrupt endpoint, 12 Mb/s |
-| Active area | 10" × 6.25" (reports `0..10000` × `0..6250`) |
-| Pressure | 1024 levels (reports `0..1023`) |
+| Coordinate range | `0..10000` × `0..6250` (as reported by the author's unit) |
+| Pressure range | `0..1023` (as reported by the author's unit) |
 
-Also sold as: Genius G-Pen F610, Trust Slimline Widescreen Tablet (#16529), Medion
-Graphics Pad MD 85637, iVistaTablet Slim 12.1, Aiptek Slim 12.1", Aiptek SlimTablet
-600u Premium II, PenPower Tooya Pro, PENTAGRAM ThinType P2006, VisTablet Original 12",
-Adesso CyberTablet Z12 / CT-Z12A, NGS Slim Pro.
+These values come from the one unit this project was developed on. Other units,
+rebadged variants, or firmware revisions have not been examined.
 
-Not present, and not fixable in software: **tilt** and **multi-touch** (the hardware
-has neither).
+Not supported: **tilt** and **multi-touch**. The shim only handles X, Y, pressure,
+tip, barrel and in-range; no tilt or touch data was seen from the author's unit.
 
 ---
 
-![A pen tablet with a stylus resting on it](docs/tablet-reference.jpg)
+![WALTOP SlimTablet retail box](docs/tablet-reference.jpg)
 
-<sub>*A Wacom Intuos4 — shown for illustration only. This is **not** the device in this
-project. Image: Joe Ravi, CC BY-SA 3.0 (see ATTRIBUTIONS.md).*</sub>
+<sub>*The author's own unit: the WALTOP "SlimTablet" retail box.*</sub>
+
+![The tablet from above, with the printed shortcut overlay and the Tablet Application Guide booklet](docs/tablet-top-down.jpg)
+
+<sub>*The author's own unit, from above, with its printed shortcut overlay and the
+"Tablet Application Guide" booklet.*</sub>
+
+![The tablet's drawing surface at an angle, showing the row of hotkey squares](docs/tablet-surface.jpg)
+
+<sub>*The author's own unit: the drawing surface and hotkey squares.*</sub>
 
 ---
 
@@ -107,7 +113,7 @@ once with the Xcode Command Line Tools (`xcode-select --install` if `swiftc` is
 missing):
 
 ```sh
-git clone https://github.com/<you>/waltop-intel-osx.git
+git clone https://github.com/matthewhand/waltop-intel-osx.git
 cd waltop-intel-osx/tools
 swiftc -O -o waltopd waltopd.swift
 ```
@@ -115,9 +121,8 @@ swiftc -O -o waltopd waltopd.swift
 This produces `tools/waltopd`: a single self-contained executable with no runtime
 dependencies, which you can copy anywhere.
 
-*(A compiled binary may also be attached to a tagged **Release**, so non-developers
-can download `waltopd` directly instead of building. The repository itself never
-stores a binary — see [.gitignore](.gitignore).)*
+*(No prebuilt binary is published at present. The repository itself never stores a
+binary — see [.gitignore](.gitignore).)*
 
 ---
 
@@ -212,10 +217,10 @@ validated on any other configuration.**
 
 ### Explicit non-claims
 
-- Not tested on any other `172f:*` product. Other WALTOP models have different broken
-  descriptors.
-- Not tested on Apple Silicon. The shim is arch-portable Swift but the event fields are
-  the same; it should work, but it is unverified.
+- Not tested on any other `172f:*` product, or on any rebadged or similar-looking
+  tablet. Other models may have different descriptors.
+- Not tested on Apple Silicon. Nothing in the code is known to be Intel-specific, but
+  this is unverified.
 - Not tested on macOS versions other than 14.8.7.
 - Not tested with any application other than Krita.
 - Assumes the tablet reports X/Y/pressure at the standard element locations and a
@@ -227,14 +232,15 @@ validated on any other configuration.**
 ## Why not a kext?
 
 A kernel extension could rewrite the descriptor (`0x30` → `0x33`) before `IOHIDFamily`
-parses it — exactly what Linux's `drivers/hid/hid-waltop.c` does. On macOS that path
+parses it — the approach Linux's `drivers/hid/hid-waltop.c` takes for several WALTOP
+tablets (that driver does not list `172f:0031`). On macOS that path
 requires SIP disabled and reduced security, and loading any kext can wake dormant
 third-party kexts (this machine has disk-array and boot-geometry kexts present on disk
 but not loaded), risking an unbootable system.
 
 Userspace virtual HID (`IOHIDUserDevice` / CoreHID) would be cleaner still, but requires
-the Apple-granted entitlement `com.apple.developer.hid.virtual.device`, which is not
-generally available.
+the Apple-granted entitlement `com.apple.developer.hid.virtual.device`, which this
+project does not have.
 
 The userspace shim avoids both problems entirely.
 
@@ -245,11 +251,13 @@ The userspace shim avoids both problems entirely.
 ```
 waltop-intel-osx/
 ├── README.md              this file
-├── ATTRIBUTIONS.md        image credits
+├── ATTRIBUTIONS.md        third-party material (none at present)
 ├── kritadraw.sh           one-command launch for Krita
 ├── LICENSE                MIT
 ├── docs/
-│   └── tablet-reference.jpg
+│   ├── tablet-reference.jpg   author's unit: retail box
+│   ├── tablet-top-down.jpg    author's unit: from above
+│   └── tablet-surface.jpg     author's unit: drawing surface
 └── tools/
     ├── waltopd.swift      the shim (single file; build to `waltopd`)
     ├── selftest.swift     standalone CGEvent delivery probe
@@ -265,5 +273,5 @@ only source is committed. Build the shim with the command in [Install](#install)
 
 ## License
 
-MIT — see [LICENSE](LICENSE). The bundled image is CC BY-SA 3.0; see
-[ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+MIT — see [LICENSE](LICENSE). The photos in `docs/` are the author's own and are
+covered by the same licence; see [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
