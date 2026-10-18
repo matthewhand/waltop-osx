@@ -1,0 +1,16 @@
+# Compiled binaries (build with: cd tools && swiftc -O -o waltopd waltopd.swift)
+tools/waltopd
+tools/waltopd.new
+tools/selftest
+tools/PressureTap
+tools/ModeSwitch
+tools/ModeSweep
+
+# Runtime output
+*.log
+*.log.1
+*.csv
+*.lock
+
+# macOS
+.DS_Store
