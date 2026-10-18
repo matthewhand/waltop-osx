@@ -33,16 +33,17 @@ tip, barrel and in-range; no tilt or touch data was seen from the author's unit.
 
 ![WALTOP SlimTablet retail box](docs/tablet-reference.jpg)
 
-<sub>*The author's own unit: the WALTOP "SlimTablet" retail box.*</sub>
+<sub>*WALTOP SlimTablet retail box (photo found online; source not yet identified).*</sub>
 
 ![The tablet from above, with the printed shortcut overlay and the Tablet Application Guide booklet](docs/tablet-top-down.jpg)
 
-<sub>*The author's own unit, from above, with its printed shortcut overlay and the
-"Tablet Application Guide" booklet.*</sub>
+<sub>*The tablet from above, with its printed shortcut overlay and the "Tablet Application
+Guide" booklet (photo found online; source not yet identified).*</sub>
 
 ![The tablet's drawing surface at an angle, showing the row of hotkey squares](docs/tablet-surface.jpg)
 
-<sub>*The author's own unit: the drawing surface and hotkey squares.*</sub>
+<sub>*All three photos were found online; their source and licence have not yet been
+identified (see [ATTRIBUTIONS.md](ATTRIBUTIONS.md)).*</sub>
 
 ---
 
@@ -251,13 +252,13 @@ The userspace shim avoids both problems entirely.
 ```
 waltop-intel-osx/
 ├── README.md              this file
-├── ATTRIBUTIONS.md        third-party material (none at present)
+├── ATTRIBUTIONS.md        third-party material (photo provenance)
 ├── kritadraw.sh           one-command launch for Krita
 ├── LICENSE                MIT
 ├── docs/
-│   ├── tablet-reference.jpg   author's unit: retail box
-│   ├── tablet-top-down.jpg    author's unit: from above
-│   └── tablet-surface.jpg     author's unit: drawing surface
+│   ├── tablet-reference.jpg   retail box (third-party photo)
+│   ├── tablet-top-down.jpg    tablet from above (third-party photo)
+│   └── tablet-surface.jpg     drawing surface (third-party photo)
 └── tools/
     ├── waltopd.swift      the shim (single file; build to `waltopd`)
     ├── selftest.swift     standalone CGEvent delivery probe
@@ -273,5 +274,6 @@ only source is committed. Build the shim with the command in [Install](#install)
 
 ## License
 
-MIT — see [LICENSE](LICENSE). The photos in `docs/` are the author's own and are
-covered by the same licence; see [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+MIT — see [LICENSE](LICENSE). The photos in `docs/` are third-party images whose
+source and licence are unknown; they are not covered by the MIT licence. See
+[ATTRIBUTIONS.md](ATTRIBUTIONS.md).
